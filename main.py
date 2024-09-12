@@ -1,10 +1,10 @@
+from copy import deepcopy                       #importar o deepcopy da biblioteca copy para poder fazer uma copia da matriz e poder mexer nela a vontade
 import time
 import pygame
-from copy import deepcopy                       #importar o deepcopy da biblioteca copy para poder fazer uma copia da matriz e poder mexer nela a vontade
 
-def checkWinner(board):
-    
-def isFull(board):
+def checkWinner(board):                         #verifica se alguém ganhou
+
+def isFull(board):                              #verifica se o tabuleiro está cheio, ou seja, empate
 
 def heuristica(board, jogador):                 #estima valor do tabuleiro
 
@@ -25,22 +25,32 @@ def minimax(board, jogador, eu, maxdepth=9):    #minimax é um algoritmo da IA, 
     jogadas = jogadasPossiveis(board)           #precisa das jogadas possiveis para o minimax poder calcular qual é a melhor
     w = checkWinner(board)                      #w recebe da funcao chegckwinner se alguém ganhou
     
-    if w == eu:                                 #se a IA vencer ela ganha 1
+    if w == eu:                                 #se a IA vencer ela ganha 1 no caso de winner ser 'eu'
         return 1                                
-    elif w != eu and not isFull(board):         #se a IA perder ela ela perde 1
+    elif w and w != eu:                         #se a IA perder ela ela perde 1 no caso de haver winner, mas esse não ser 'eu'
         return -1
-    elif isFull(board):                         #se der empate ela não recebe nada e ne perde nada
+    elif not w and isFull(board):               #se der empate ela não recebe nada e nem perde nada no caso de não haver vencedor e o tabuleiro estiver cheio
         return 0
+    elif maxdepth == 0:
+        return heuristica(board, jogador)       #se eu for muito fundo no minimax ele para a recursão e chama a euristica do tabuleiro com o jogador atual pra resolver
 
     if jogador == eu:                           #Max
-        best = -float('inf')                    #vamos percorrer todas as possiblidades a partir do tabuleiro atual e retornar o valor da maior delas
-        for jogada in jogadas:
-            resultado = resultJogada(board, jogadas[jogada], jogador)
-            valor = minimax(resultado, 'O' if jogador == 'X' else 'X', eu)
-            if valor > best:
-                best = valor
+        best = -float('inf')                    #percorreremo todas as possiblidades a partir do tabuleiro atual e retornar o valor da maior delas por isso o -infinito
+        for jogada in jogadas:                  #o laço de repetição vai em jogada por jogada para testar o maior valor
+            resultado = resultJogada(board, jogadas[jogada], jogador)       #resultado guarda a jogada feita em resultJogada()
+            valor = minimax(resultado, 'O' if jogador == 'X' else 'X', eu, maxdepth-1)  #qual o valor do tabuleiro depois de fazer a jogada que está dentro de resultJogada()
+            if valor > best:                                                #se o valor atual for maior do que o a maior até o momento então...
+                best = valor                                                #o maior valor vira o atual
         '''aqui preciso terminar de fazer, deve esta em mais ou menos 30 min de aula e preciso dormir'''
+        return best                                                         #retornamos o maior valor para o max
     else:                                       #Min
+        best = float('inf')                     #agora faremo o contrário, pegamos o infinito positivo e verificamos os menores valores possiveis para substituir
+        for jogada in jogadas:                  #o laço para ver todas as jogadas
+            resultado = resultJogada(board, jogadas[jogada], jogador)       #resultado verifica a jogada
+            valor = minimax(resultado, 'O' if jogador == 'X' else 'X', eu, maxdepth-1)  #valor pega o resultado da jogada anterior e passa ela pro minimax
+            if valor < best:                                                #se o valor que passou pelo minimax for menor que o atual então...
+                best = valor                                                #o menor valor agora é o atual
+        return best                                                         #retornamos a melhor jogada de menor valor
         
 def bestAction(board, eu):                      #retorna a melhor jogada
     jogadas = jogadasPossiveis(board)           #recebe a lista de todas as jogadas possiveis
@@ -48,8 +58,8 @@ def bestAction(board, eu):                      #retorna a melhor jogada
     bestAct = None                              #inicia a melhor ação sem nenhuma valor
     
     for jogada in jogadas:                      #percorre todas as jogadas possiveis de jogada em jogada
-        resultado = resultJogada(board, jogadas[jogada], eu)    #chama a computação de resultados e passa como parametro o tabuleiro, a lista de jogadas possiveis e se o jogador é x ou o
-        valor = minimax(board, eu, eu)          #valore drecebera o resultado de minimax que recebe como parametro onde o X ou O foi jogada
+        resultado = resultJogada(board, jogadas[jogada], eu)            #chama a computação de resultados e passa como parametro o tabuleiro, a lista de jogadas possiveis e se o jogador é x ou o
+        valor = minimax(resultado, 'O' if eu == 'X' else 'X', eu, 4)    #valor recebido de 'resultado' passa agora pelo minimax que recebe como parametro onde o X ou O foi jogada e tambem a profundidade d pesquisa, quando chegar a zero ele começa a usar a heuristica.
         if valor > best:                        #se valor recebido do minimax é maior que melhor(o que é lógico) então...
             best = valor                        #as melhor recebe o minimax
             bestAct = jogadas[jogada]           #e a melhor ação recebe a lista na posição atual do laço
