@@ -149,11 +149,11 @@ def bestAction(board, eu):                      #retorna a melhor jogada
     bestAct = None                              #inicia a melhor ação sem nenhuma valor
     
     for jogada in jogadas:                      #percorre todas as jogadas possiveis de jogada em jogada
-        resultado = resultJogada(board, jogadas[jogada], eu)            #chama a computação de resultados e passa como parametro o tabuleiro, a lista de jogadas possiveis e se o jogador é x ou o
-        valor = minimax(resultado, 'O' if eu == 'X' else 'X', -float('inf'), float('inf'), eu, 3)    #valor recebido de 'resultado' passa agora pelo minimax que recebe como parametro onde o X ou O foi jogada e tambem a profundidade d pesquisa, quando chegar a zero ele começa a usar a heuristica, o valores infinitos são para garantir que não estamos valores maiores ou menores que os alhpa e beta.
+        resultado = resultJogada(board, jogada, eu)            #chama a computação de resultados e passa como parametro o tabuleiro, a lista de jogadas possiveis e se o jogador é x ou o
+        valor = minimax(resultado, 'O' if eu == 'X' else 'X', eu, -float('inf'), float('inf'), 3)    #valor recebido de 'resultado' passa agora pelo minimax que recebe como parametro onde o X ou O foi jogada e tambem a profundidade d pesquisa, quando chegar a zero ele começa a usar a heuristica, o valores infinitos são para garantir que não estamos valores maiores ou menores que os alhpa e beta.
         if valor > best:                        #se valor recebido do minimax é maior que melhor(o que é lógico) então...
             best = valor                        #as melhor recebe o minimax
-            bestAct = jogadas[jogada]           #e a melhor ação recebe a lista na posição atual do laço
+            bestAct = jogada           #e a melhor ação recebe a lista na posição atual do laço
     return bestAct
 
 def jogo():
