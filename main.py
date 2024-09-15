@@ -18,6 +18,10 @@ pygame.display.set_caption('TicTacToeAB')
 tamanhoQuadrado = 200
 margem = 10
 
+def finalizar():
+    pygame.quit()
+    exit()
+
 def desenharTabuleiro(board):
     tela.fill(PRETO)
     for linha in range (3):
@@ -165,34 +169,53 @@ def jogo():
     while jogando:
         desenharTabuleiro(board)
         pygame.display.flip()
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                jogando = False
 
-            if evento.type == pygame.MOUSEBUTTONDOWN and vencedor is None:
-                mouseX, mouseY = pygame.mouse.get_pos()
-                
-                linha = mouseY // tamanhoQuadrado
-                coluna = mouseX // tamanhoQuadrado
+        if jogadorAtual == 'O':                 #a iA joga com 'O'
+            time.sleep(1)                       #pra dar um pequeno delay pra jogada da IA
+            jogada = bestAction(board, 'O')
+            if jogada is not None:
+                board[jogada[0]][jogada[1]] == 'O'
+                vencedor = checkWinner(board)
 
-                if board[linha][coluna] is None:
-                    board[linha][coluna] = jogadorAtual
+                if vencedor:
+                    print(f'O jogador {vencedor} venceu!')
+                elif isFull(board):
+                    print(f'Empate')
+        else:
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    jogando = False
+                    finalizar()
 
-                    vencedor = checkWinner(board)
+                if evento.type == pygame.KEYDOWN:
+                    if evento.key == pygame.K_ESCAPE:
+                        finalizar()
 
-                    if vencedor:
-                        print(f'O jogador {vencedor} venceu!')
-                    elif isFull(board):
-                        print(f'Empate')
+                if evento.type == pygame.MOUSEBUTTONDOWN and vencedor is None:
+                    mouseX, mouseY = pygame.mouse.get_pos()
+                    
+                    linha = mouseY // tamanhoQuadrado
+                    coluna = mouseX // tamanhoQuadrado
 
-                    jogadorAtual = 'O' if jogadorAtual == 'X' else 'X'
+                    if board[linha][coluna] is None:
+                        board[linha][coluna] = jogadorAtual
+
+                        vencedor = checkWinner(board)
+
+                        if vencedor:
+                            print(f'O jogador {vencedor} venceu!')
+                        elif isFull(board):
+                            print(f'Empate')
+
+                        jogadorAtual = 'O' if jogadorAtual == 'X' else 'X'
 
         if vencedor or isFull(board):
             tela.fill(PRETO)
             textoFinal = fonte.render(f'{vencedor} venceu' if vencedor else 'Empate!', True, BRANCO)
             tela.blit(textoFinal, (200, 250))
             pygame.display.flip()
-            time.sleep(3)
+            time.sleep(4)
             Jogando = False
+            finalizar()
     pygame.quit
 jogo()
