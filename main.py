@@ -1,13 +1,63 @@
 from copy import deepcopy                       #importar o deepcopy da biblioteca copy para poder fazer uma copia da matriz e poder mexer nela a vontade
-import time
+from math import pow                            #importa potenciação para que eu possa fazer calcular valores e fazer estimativa da heuristica
 import pygame
+import time
+
+pygame.init()
+
+largura, altura = 800, 600
+
+tela = pygame.display.set_mode((largura, altura))
+pygame.display.set_caption('TicTacToe')
+
+def poda
 
 def checkWinner(board):                         #verifica se alguém ganhou
 
 def isFull(board):                              #verifica se o tabuleiro está cheio, ou seja, empate
+    for linhas in board:                        #para cada linha no tabuleiro
+        for colunas in linhas:                  #para cada coluna das linhas
+            if colunas == '' or None:           #se pelo menos uma for vazia então...
+                return False                    #é falso, não está cheio
+    return True                                 #se não sair retornar dentro do laço de repetição então ele é verdadeiro, e não há um elemento vazio na matriz
 
 def heuristica(board, jogador):                 #estima valor do tabuleiro
+    h = 0                                       #inicia-se o valor zerado para que eu possa fazer o valor da minha heuristica
+    oponente = 'O' if jogador == 'X' else 'X'   #oponente recebe O, se for a vez do O então o jogador recebe X, se não for, oponente recebe X
+    
+    for i in range (3):
+        if board[i][0] != oponente and board[i][1] != oponente and board[i][2] != oponente: #se o oponente não fechou nenhuma das chances de vitoria pela horizontal então...
+            h += pow((board[i][0] == jogador) + (board[i][1] == jogador) + (board[i][2] == jogador), 2) #ele incrementa um valor(potencializado) se tiver alguma casa marcada na horizontal
+    
+    for i in range (3):
+        if board[0][i] != oponente and board[1][i] != oponente and board[2][i] != oponente: #se o oponente não fechou nenhuma das chance de vitoria pela vertical então...
+            h += pow((board[0][i] == jogador) + (board[1][i] == jogador) + (board[2][i] == jogador), 2) #incrimenta, se tiver chance de ganha pela vertical
+    
+    if board[0][0] != oponente and board[1][1] != oponente and board[2][2] != oponente:
+        h += pow((board[0][0] == jogador) + (board[1][1] == jogador) + (board[2][2] == jogador), 2)     #continua incrementando se as jogadas forem na diagonal tbm
+    
+    if board[0][2] != oponente and board[1][1] != oponente and board[2][0] != oponente:
+        h += pow((board[0][2] == jogador) + (board[1][1] == jogador) + (board[2][0] == jogador))         #tanto a diagonal esquerda-direita quanto a inversa
 
+
+    #faremos o calculo contrário em caso de desvantagem
+    for i in range (3):
+        if board[i][0] != jogador and board[i][1] != jogador and board[i][2] != jogador: #se o oponente não fechou nenhuma das chances de vitoria pela horizontal então...
+            h -= pow((board[i][0] == oponente) + (board[i][1] == oponente) + (board[i][2] == oponente), 2) #ele incrementa um valor(potencializado) se tiver alguma casa marcada na horizontal
+    
+    for i in range (3):
+        if board[0][i] != jogador and board[1][i] != jogador and board[2][i] != jogador: #se o oponente não fechou nenhuma das chance de vitoria pela vertical então...
+            h -= pow((board[0][i] == oponente) + (board[1][i] == oponente) + (board[2][i] == oponente), 2) #incrimenta, se tiver chance de ganha pela vertical
+    
+    if board[0][0] != jogador and board[1][1] != jogador and board[2][2] != jogador:
+        h -= pow((board[0][0] == oponente) + (board[1][1] == oponente) + (board[2][2] == oponente), 2)     #continua incrementando se as jogadas forem na diagonal tbm
+    
+    if board[0][2] != jogador and board[1][1] != jogador and board[2][0] != jogador:
+        h -= pow((board[0][2] == oponente) + (board[1][1] == oponente) + (board[2][0] == oponente))         #tanto a diagonal esquerda-direita quanto a inversa
+       
+    
+    return h
+        
 def resultJogada(board, pos, jogador):          #computa resultado da jogada
     new_board = deepcopy(board)
     new_board[pos[0]][pos[1]] = jogador         #marcar cordenada onde o jogador marcou sua jogada
@@ -26,9 +76,9 @@ def minimax(board, jogador, eu, maxdepth=9):    #minimax é um algoritmo da IA, 
     w = checkWinner(board)                      #w recebe da funcao chegckwinner se alguém ganhou
     
     if w == eu:                                 #se a IA vencer ela ganha 1 no caso de winner ser 'eu'
-        return 1                                
+        return 999                              #999 é pra garantir que a "o programa entenda" que usar heuristica que "é achar que vai ganhar", mas aqui é a certeza, ou seja, é maior. 
     elif w and w != eu:                         #se a IA perder ela ela perde 1 no caso de haver winner, mas esse não ser 'eu'
-        return -1
+        return -999                             #aqui é o efeito contrário, pro programa entender que é certeza a derrota
     elif not w and isFull(board):               #se der empate ela não recebe nada e nem perde nada no caso de não haver vencedor e o tabuleiro estiver cheio
         return 0
     elif maxdepth == 0:
@@ -59,7 +109,7 @@ def bestAction(board, eu):                      #retorna a melhor jogada
     
     for jogada in jogadas:                      #percorre todas as jogadas possiveis de jogada em jogada
         resultado = resultJogada(board, jogadas[jogada], eu)            #chama a computação de resultados e passa como parametro o tabuleiro, a lista de jogadas possiveis e se o jogador é x ou o
-        valor = minimax(resultado, 'O' if eu == 'X' else 'X', eu, 4)    #valor recebido de 'resultado' passa agora pelo minimax que recebe como parametro onde o X ou O foi jogada e tambem a profundidade d pesquisa, quando chegar a zero ele começa a usar a heuristica.
+        valor = minimax(resultado, 'O' if eu == 'X' else 'X', eu, 3)    #valor recebido de 'resultado' passa agora pelo minimax que recebe como parametro onde o X ou O foi jogada e tambem a profundidade d pesquisa, quando chegar a zero ele começa a usar a heuristica.
         if valor > best:                        #se valor recebido do minimax é maior que melhor(o que é lógico) então...
             best = valor                        #as melhor recebe o minimax
             bestAct = jogadas[jogada]           #e a melhor ação recebe a lista na posição atual do laço
