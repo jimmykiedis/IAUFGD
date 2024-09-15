@@ -5,10 +5,32 @@ import time
 
 pygame.init()
 
-largura, altura = 800, 600
+largura, altura = 610, 610
+fonte = pygame.font.Font(None, 120)
+PRETO = (0, 0, 0)
+BRANCO = (255, 255, 255)
+VERMELHO = (255, 0, 0)
+AZUL = (0, 0, 255)
 
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption('TicTacToeAB')
+
+tamanhoQuadrado = 200
+margem = 10
+
+def desenharTabuleiro(board):
+    tela.fill(PRETO)
+    for linha in range (3):
+        for coluna in range (3):
+            x = coluna * tamanhoQuadrado + margem
+            y = linha * tamanhoQuadrado + margem
+            pygame.draw.rect(tela, BRANCO, (x, y, tamanhoQuadrado - margem, tamanhoQuadrado-margem))
+            if board[linha][coluna] == 'X':
+                texto = fonte.render('X', True, VERMELHO)
+                tela.blit(texto, (x + 50, y + 20))
+            elif board[linha][coluna] == 'O':
+                texto = fonte.render('O', True, AZUL)
+                tela.blit(texto, (x + 50, y +50))
 
 def checkWinner(board):                         #verifica se alguém ganhou
     for i in range (3):
@@ -28,7 +50,7 @@ def checkWinner(board):                         #verifica se alguém ganhou
 def isFull(board):                              #verifica se o tabuleiro está cheio, ou seja, empate
     for linhas in board:                        #para cada linha no tabuleiro
         for colunas in linhas:                  #para cada coluna das linhas
-            if colunas == '' or None:           #se pelo menos uma for vazia então...
+            if colunas is None:           #se pelo menos uma for vazia então...
                 return False                    #é falso, não está cheio
     return True                                 #se não sair retornar dentro do laço de repetição então ele é verdadeiro, e não há um elemento vazio na matriz
 
@@ -65,7 +87,7 @@ def heuristica(board, jogador):                 #estima valor do tabuleiro
     
     if board[0][2] != jogador and board[1][1] != jogador and board[2][0] != jogador:
         h -= pow((board[0][2] == oponente) + (board[1][1] == oponente) + (board[2][0] == oponente))         #tanto a diagonal esquerda-direita quanto a inversa
-       
+    
     
     return h
         
@@ -128,5 +150,49 @@ def bestAction(board, eu):                      #retorna a melhor jogada
         if valor > best:                        #se valor recebido do minimax é maior que melhor(o que é lógico) então...
             best = valor                        #as melhor recebe o minimax
             bestAct = jogadas[jogada]           #e a melhor ação recebe a lista na posição atual do laço
-    return bestAct   
-#teste
+    return bestAct
+
+def jogo():
+    board = [[None, None, None],
+             [None, None, None],
+             [None, None, None]
+    ]
+
+    jogadorAtual = 'X'
+    jogando = True
+    vencedor = None
+
+    while jogando:
+        desenharTabuleiro(board)
+        pygame.display.flip()
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                jogando = False
+
+            if evento.type == pygame.MOUSEBUTTONDOWN and vencedor is None:
+                mouseX, mouseY = pygame.mouse.get_pos()
+                
+                linha = mouseY // tamanhoQuadrado
+                coluna = mouseX // tamanhoQuadrado
+
+                if board[linha][coluna] is None:
+                    board[linha][coluna] = jogadorAtual
+
+                    vencedor = checkWinner(board)
+
+                    if vencedor:
+                        print(f'O jogador {vencedor} venceu!')
+                    elif isFull(board):
+                        print(f'Empate')
+
+                    jogadorAtual = 'O' if jogadorAtual == 'X' else 'X'
+
+        if vencedor or isFull(board):
+            tela.fill(PRETO)
+            textoFinal = fonte.render(f'{vencedor} venceu' if vencedor else 'Empate!', True, BRANCO)
+            tela.blit(textoFinal, (200, 250))
+            pygame.display.flip()
+            time.sleep(3)
+            Jogando = False
+    pygame.quit
+jogo()
