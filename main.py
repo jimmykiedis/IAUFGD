@@ -32,7 +32,7 @@ def desenharTabuleiro(board):                                   #desenhando o ta
                 texto = fonte.render('O', True, (0, 0, 255))    #desenhamos ele na tela com a cor azul
                 tela.blit(texto, (x + 50, y +50))               #tentansmo fazer no mais centrado possivel
 
-def checkWinner(board):                                                             #verifica se alguém ganhou
+def checarVencedor(board):                                                             #verifica se alguém ganhou
     for i in range (3):
         if board[i][0] == board[i][1] == board[i][2] and board[0][i] is not None:   #vamos testar cada linha da matriz tem tem o mesmo conteúdo, no caso nada
             return board[i][0]                                                      #retorna o conteudo que está nessa posição da matriz, quem venceu nessa linha, seja 'X' ou 'O'
@@ -101,7 +101,7 @@ def jogadasPossiveis(board):                                    #lista de jogada
 
 def minimax(board, jogador, eu, alpha, beta, maxdepth=9):       #minimax é um algoritmo da IA, aqui ela montará seu score
     jogadas = jogadasPossiveis(board)                           #precisa das jogadas possiveis para o minimax poder calcular qual é a melhor
-    w = checkWinner(board)                                      #w recebe da funcao chegckwinner se alguém ganhou
+    w = checarVencedor(board)                                      #w recebe da funcao chegckwinner se alguém ganhou
     
     if w == eu:                                                 #se a IA vencer ela ganha 999 no caso de winner ser 'eu'
         return 999                                              #999 é pra garantir que a "o programa entenda" que usar heuristica que "é achar que vai ganhar" é incerteza, mas aqui é a certeza, ou seja, é maior. 
@@ -165,7 +165,7 @@ def jogo():                                     #aqui a gente inicia o jogo de v
             jogada = bestAction(board, 'O')     #a jogada da IA é manda para ser analisada
             if jogada is not None:              #garantindo que o algotimo não preencha campos 'cheios' com outra informação
                 board[jogada[0]][jogada[1]] = 'O'   #marcamos a posição da matriz com 'O'
-                vencedor = checkWinner(board)   #vamos checar pra ver se alguém venceu
+                vencedor = checarVencedor(board)   #vamos checar pra ver se alguém venceu
                 if vencedor:                    #se venceu, vamos ver quem
                     print(f'O jogador {vencedor} venceu!')  #se 'X' venceu ou se 'O' venceu
                 elif isFull(board):                         #se estiver cheio, deu velha
@@ -191,7 +191,7 @@ def jogo():                                     #aqui a gente inicia o jogo de v
                     if board[linha][coluna] is None:                                #ele vai pegar os parametros da matriz e verificar se ela está vazzia
                         board[linha][coluna] = jogadorAtual                         #caso vazia ele vai completar com quem está atualmente jogado, se 'X' senão 'O'
 
-                        vencedor = checkWinner(board)                               #depois de marcado, vamos verificar se alguém já venceu
+                        vencedor = checarVencedor(board)                               #depois de marcado, vamos verificar se alguém já venceu
 
                         if vencedor:                                                #mesma coisa doq ue tá lá em cima, se venceu, escreve na tela
                             print(f'O jogador {vencedor} venceu!')
