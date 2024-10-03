@@ -7,12 +7,11 @@ pygame.init()                                       #inicia o pygame pra ajudar 
 
 largura, altura = 610, 610                          # algumas constantes
 fonte = pygame.font.Font(None, 120)
+tamanhoQuadrado = 200
+margem = 10
 
 tela = pygame.display.set_mode((largura, altura))   #a definição da tela
 pygame.display.set_caption('TicTacToeAB')
-
-tamanhoQuadrado = 200
-margem = 10
 
 def finalizar():                                    #decidi fazer uma função para finalizar o jogo e deixar melhor claro o que fazer caso eu queira fechar a tela do jogo
     pygame.quit()
