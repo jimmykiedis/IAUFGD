@@ -1,4 +1,4 @@
-from copy import deepcopy                           #importar o deepcopy da biblioteca copy para poder fazer uma copia da matriz e poder mexer nela a vontade
+from copy import deepcopy                           #importar uma biblioteca para fazer uma copia da matriz e poder mexer nela a vontade
 from math import pow                                #importa potenciação para que eu possa fazer calcular valores e fazer estimativa da heuristica
 import pygame                                       #pra ajudar a abstrair vamos usar o pygame para desenhar o jogo
 import time                                         #pra deixar mais dinamico, vamos simular um tempo para a IA pensar
