@@ -5,8 +5,8 @@ import time                                         #pra deixar mais dinamico, v
 
 pygame.init()                                       #inicia o pygame pra ajudar a gente a abstrair graficamente
 
-largura, altura = 610, 610                          # algumas constantes
-fonte = pygame.font.Font(None, 120)
+largura, altura = 610, 610                          # algumas constantes 
+fonte = pygame.font.Font(None, 120)                 #definindo a fonte que vamos usar, o None é para usar a fonte padrão do pygame, e 120 é o tamanho da fonte    
 tamanhoQuadrado = 200
 margem = 10
 
