@@ -36,10 +36,7 @@ Ideal para fins acadêmicos, estudos sobre IA em jogos, e diversão com Python!
    pip install pygame
 
 3. Execute o arquivo principal:
-   python nome_do_arquivo.py
-
-*Substitua "nome_do_arquivo.py" pelo nome correto do seu script (ex: tictactoe.py)*
-
+   python main.py
 
 📂 ESTRUTURA DO CÓDIGO
 -----------------------
@@ -68,6 +65,6 @@ Ideal para fins acadêmicos, estudos sobre IA em jogos, e diversão com Python!
 
 👨‍💻 AUTORIA
 -------------
-Desenvolvido por: [Seu Nome ou Apelido Aqui]
-Projeto educacional para estudos em Ciência da Computação
+Desenvolvido por: @jimmykiedis
+Projeto educacional para estudos em Inteligência Artificial
 
