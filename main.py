@@ -205,7 +205,7 @@ def jogo():                                     #aqui a gente inicia o jogo de v
             tela.blit(textoFinal, (150, 250))
             pygame.display.flip()
             time.sleep(4)
-            Jogando = False
+            jogando = False
             finalizar()
             
     pygame.quit()
